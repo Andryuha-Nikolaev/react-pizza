@@ -28,6 +28,7 @@ function App() {
                 // imageUrl={obj.imageUrl}
                 // sizes={obj.sizes}
                 // types={obj.types}
+                //
                 key={obj.id}
                 {...obj}
               />
