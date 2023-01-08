@@ -13,6 +13,7 @@
     "@types/react-dom": "^18.0.9",
     "axios": "^1.2.1",
     "lodash.debounce": "^4.0.8",
+    "qs": "^6.11.0",
     "react": "^18.2.0",
     "react-content-loader": "^6.2.0",
     "react-dom": "^18.2.0",
