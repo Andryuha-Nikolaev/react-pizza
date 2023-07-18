@@ -12,6 +12,7 @@ import Sort, { sortList } from '../components/Sort';
 import PizzaBlock from '../components/PizzaBlock';
 import Skeleton from '../components/PizzaBlock/Skeleton';
 import Pagination from '../components/Pagination';
+import { fetchPizzas } from '../redux/slices/pizzaSlice';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -20,49 +21,48 @@ const Home = () => {
   const isMounted = useRef(false);
 
   const { categoryId, sort, currentPage } = useSelector((state) => state.filter);
+  const { items, loading } = useSelector((state) => state.pizza);
 
   const { searchValue } = React.useContext(SearchContext);
-  const [items, setItems] = useState([]);
-  const [isloading, setIsLoading] = useState(true);
-  const [itemsCount, setItemsCount] = useState('');
-
-  console.log(itemsCount);
+  const [itemsCount, setItemsCount] = useState(1);
 
   const onChangeCategory = (i) => {
     dispatch(setCategoryId(i));
+    dispatch(setCurrentPage(1));
   };
 
   const onChangePage = (number) => {
     dispatch(setCurrentPage(number));
   };
 
-  const fetchPizzas = () => {
-    setIsLoading(true);
-
+  const getPizzas = async () => {
     const order = sort.sortProperty.includes('-') ? 'asc' : 'desc';
     const sortBy = sort.sortProperty.replace('-', '');
     const category = categoryId > 0 ? `category=${categoryId}` : '';
     const search = searchValue ? `&search=${searchValue}` : '';
 
-    axios
-      .get(
-        `https://6397233886d04c76338c00d0.mockapi.io/items?&limit=4&${category}&sortBy=${sortBy}&order=${order}${search}`,
-      )
-      .then((res) => {
-        setItemsCount(Math.ceil(res.data.length / 4));
-      });
+    try {
+      const resItemsCount = await axios.get(
+        `https://6397233886d04c76338c00d0.mockapi.io/items?&${category}&sortBy=${sortBy}&order=${order}${search}`,
+      );
+      setItemsCount(Math.ceil(resItemsCount.data.length / 4));
+    } catch (error) {
+      console.log('ERROR:', error);
+      alert('Ошибка при получении данных');
+    }
 
-    axios
-      .get(
-        `https://6397233886d04c76338c00d0.mockapi.io/items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}&order=${order}${search}`,
-      )
-      .then((res) => {
-        setItems(res.data);
-        setIsLoading(false);
-      });
+    dispatch(
+      fetchPizzas({
+        order,
+        sortBy,
+        category,
+        search,
+        currentPage,
+      }),
+    );
+
+    window.scrollTo(0, 0);
   };
-
-  console.log(items);
 
   //если изменили параметры и был первый рендер
   //получаем строку из параметров сортировки, категории, выбранной страницы
@@ -86,8 +86,6 @@ const Home = () => {
     if (window.location.search) {
       const params = qs.parse(window.location.search.substring(1));
 
-      console.log(params.currentPage);
-
       const sort = sortList.find((obj) => obj.sortProperty === params.sortProperty);
 
       dispatch(
@@ -103,12 +101,10 @@ const Home = () => {
   //если был первый рендер, то запрашиваем пиццы
   //получение пицц с сервера
   useEffect(() => {
-    window.scrollTo(0, 0);
-
-    if (!isSearch.current) {
-      fetchPizzas();
-    }
-    isSearch.current = false;
+    // if (!isSearch.current) {
+    getPizzas();
+    // }
+    // isSearch.current = false;
   }, [categoryId, sort.sortProperty, searchValue, currentPage]);
 
   return (
@@ -118,12 +114,30 @@ const Home = () => {
         <Sort />
       </div>
       <h2 className="content__title">Все пиццы</h2>
-      <div className="content__items">
-        {isloading
-          ? [...new Array(6)].map((_, index) => <Skeleton key={index} />)
-          : items.map((obj) => <PizzaBlock key={obj.id} {...obj} />)}
-      </div>
-      <Pagination itemsCount={itemsCount} currentPage={currentPage} onChangePage={onChangePage} />
+      {loading === 'failed' ? (
+        <div className="content__error-info">
+          <h2>
+            Произошла ошибка <span>😕</span>
+          </h2>
+          <p>Не удалось получить пиццы.</p>
+
+          <p>Попробуйте повторить попытку позже.</p>
+        </div>
+      ) : (
+        <>
+          <div className="content__items">
+            {loading === 'pending'
+              ? [...new Array(6)].map((_, index) => <Skeleton key={index} />)
+              : items.map((obj) => <PizzaBlock key={obj.id} {...obj} />)}
+          </div>
+
+          <Pagination
+            itemsCount={itemsCount}
+            currentPage={currentPage}
+            onChangePage={onChangePage}
+          />
+        </>
+      )}
     </div>
   );
 };
