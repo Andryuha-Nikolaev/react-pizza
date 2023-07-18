@@ -19,11 +19,16 @@ function PizzaBlock({ id, title, price, imageUrl, sizes, types }) {
 
   const addedCount = cartItem ? cartItem.count : 0;
 
+  const currentPrice =
+    sizes[activeSize] === 26 ? price : sizes[activeSize] === 30 ? price * 1.2 : price * 1.4;
+
+  const currentPriceCeil = Math.ceil(currentPrice);
+
   const addItemClick = () => {
     const item = {
       id,
       title,
-      price,
+      price: currentPriceCeil,
       imageUrl,
       type: typeNames[activeType],
       size: sizes[activeSize],
@@ -60,7 +65,7 @@ function PizzaBlock({ id, title, price, imageUrl, sizes, types }) {
           </ul>
         </div>
         <div className="pizza-block__bottom">
-          <div className="pizza-block__price">от {price} ₽</div>
+          <div className="pizza-block__price">{currentPriceCeil} ₽</div>
           <button onClick={addItemClick} className="button button--outline button--add">
             <svg
               width="12"

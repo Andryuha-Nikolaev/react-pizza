@@ -24,6 +24,9 @@ const Home = () => {
   const { searchValue } = React.useContext(SearchContext);
   const [items, setItems] = useState([]);
   const [isloading, setIsLoading] = useState(true);
+  const [itemsCount, setItemsCount] = useState('');
+
+  console.log(itemsCount);
 
   const onChangeCategory = (i) => {
     dispatch(setCategoryId(i));
@@ -40,6 +43,14 @@ const Home = () => {
     const sortBy = sort.sortProperty.replace('-', '');
     const category = categoryId > 0 ? `category=${categoryId}` : '';
     const search = searchValue ? `&search=${searchValue}` : '';
+
+    axios
+      .get(
+        `https://6397233886d04c76338c00d0.mockapi.io/items?&limit=4&${category}&sortBy=${sortBy}&order=${order}${search}`,
+      )
+      .then((res) => {
+        setItemsCount(Math.ceil(res.data.length / 4));
+      });
 
     axios
       .get(
@@ -112,7 +123,7 @@ const Home = () => {
           ? [...new Array(6)].map((_, index) => <Skeleton key={index} />)
           : items.map((obj) => <PizzaBlock key={obj.id} {...obj} />)}
       </div>
-      <Pagination currentPage={currentPage} onChangePage={onChangePage} />
+      <Pagination itemsCount={itemsCount} currentPage={currentPage} onChangePage={onChangePage} />
     </div>
   );
 };
