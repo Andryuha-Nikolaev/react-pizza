@@ -1,18 +1,23 @@
-import React, { useEffect, useState, useRef } from 'react';
-import axios from 'axios';
+import React, { useEffect, useRef } from 'react';
+
 import qs from 'qs';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { SearchContext } from '../App';
-import { setCategoryId, setCurrentPage, setFilters } from '../redux/slices/filterSlice';
+import {
+  setCategoryId,
+  setCurrentPage,
+  setFilters,
+  selectFilter,
+} from '../redux/slices/filterSlice';
 
 import Categories from '../components/Categories';
 import Sort, { sortList } from '../components/Sort';
 import PizzaBlock from '../components/PizzaBlock';
 import Skeleton from '../components/PizzaBlock/Skeleton';
 import Pagination from '../components/Pagination';
-import { fetchPizzas } from '../redux/slices/pizzaSlice';
+import { fetchPizzas, pageCount, selectPizzasData } from '../redux/slices/pizzaSlice';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -20,11 +25,10 @@ const Home = () => {
   const isSearch = useRef(false);
   const isMounted = useRef(false);
 
-  const { categoryId, sort, currentPage } = useSelector((state) => state.filter);
-  const { items, loading } = useSelector((state) => state.pizza);
+  const { categoryId, sort, currentPage } = useSelector(selectFilter);
+  const { items, loading, pageCountNumber } = useSelector(selectPizzasData);
 
   const { searchValue } = React.useContext(SearchContext);
-  const [itemsCount, setItemsCount] = useState(1);
 
   const onChangeCategory = (i) => {
     dispatch(setCategoryId(i));
@@ -41,15 +45,14 @@ const Home = () => {
     const category = categoryId > 0 ? `category=${categoryId}` : '';
     const search = searchValue ? `&search=${searchValue}` : '';
 
-    try {
-      const resItemsCount = await axios.get(
-        `https://6397233886d04c76338c00d0.mockapi.io/items?&${category}&sortBy=${sortBy}&order=${order}${search}`,
-      );
-      setItemsCount(Math.ceil(resItemsCount.data.length / 4));
-    } catch (error) {
-      console.log('ERROR:', error);
-      alert('Ошибка при получении данных');
-    }
+    dispatch(
+      pageCount({
+        order,
+        sortBy,
+        category,
+        search,
+      }),
+    );
 
     dispatch(
       fetchPizzas({
@@ -80,6 +83,15 @@ const Home = () => {
     isMounted.current = true;
   }, [categoryId, sort.sortProperty, currentPage]);
 
+  //если был первый рендер, то запрашиваем пиццы
+  //получение пицц с сервера
+  useEffect(() => {
+    if (!isSearch.current) {
+      getPizzas();
+    }
+    isSearch.current = false;
+  }, [categoryId, sort.sortProperty, searchValue, currentPage]);
+
   //Если был первый рендер, то проверяем URL-параметры и сохраняем в редаксе
   //проверка, есть ли параметры поиска в адресной строке при первой загрузке
   useEffect(() => {
@@ -97,15 +109,6 @@ const Home = () => {
       isSearch.current = true;
     }
   }, []);
-
-  //если был первый рендер, то запрашиваем пиццы
-  //получение пицц с сервера
-  useEffect(() => {
-    // if (!isSearch.current) {
-    getPizzas();
-    // }
-    // isSearch.current = false;
-  }, [categoryId, sort.sortProperty, searchValue, currentPage]);
 
   return (
     <div className="container">
@@ -130,14 +133,13 @@ const Home = () => {
               ? [...new Array(6)].map((_, index) => <Skeleton key={index} />)
               : items.map((obj) => <PizzaBlock key={obj.id} {...obj} />)}
           </div>
-
-          <Pagination
-            itemsCount={itemsCount}
-            currentPage={currentPage}
-            onChangePage={onChangePage}
-          />
         </>
-      )}
+      )}{' '}
+      <Pagination
+        itemsCount={pageCountNumber}
+        currentPage={currentPage}
+        onChangePage={onChangePage}
+      />
     </div>
   );
 };
