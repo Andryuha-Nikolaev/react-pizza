@@ -13,7 +13,7 @@ const Pagination = ({ itemsCount, currentPage, onChangePage }) => {
       onPageChange={(event) => onChangePage(event.selected + 1)}
       pageRangeDisplayed={4}
       pageCount={itemsCount}
-      // renderOnZeroPageCount={null}
+      renderOnZeroPageCount={null}
       forcePage={currentPage - 1}
     />
   );

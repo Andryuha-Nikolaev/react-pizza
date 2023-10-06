@@ -4,7 +4,6 @@ import qs from 'qs';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { SearchContext } from '../App';
 import {
   setCategoryId,
   setCurrentPage,
@@ -28,7 +27,7 @@ const Home = () => {
   const { categoryId, sort, currentPage } = useSelector(selectFilter);
   const { items, loading, pageCountNumber } = useSelector(selectPizzasData);
 
-  const { searchValue } = React.useContext(SearchContext);
+  const { searchValue } = useSelector(selectFilter);
 
   const onChangeCategory = (i) => {
     dispatch(setCategoryId(i));
@@ -128,6 +127,14 @@ const Home = () => {
         </div>
       ) : (
         <>
+          {loading === 'succeeded' && !items.length && (
+            <div className="content__error-info">
+              <h2>
+                Ничего не найдено <span>😕</span>
+              </h2>
+              <p>Попробуйте изменить поисковой запрос.</p>
+            </div>
+          )}
           <div className="content__items">
             {loading === 'pending'
               ? [...new Array(6)].map((_, index) => <Skeleton key={index} />)
