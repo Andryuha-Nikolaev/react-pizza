@@ -14,9 +14,9 @@ function App() {
       <Header />
       <div className="content">
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="*" element={<NotFound />} />
+          <Route exact path="/" element={<Home />} />
+          <Route exact path="/cart" element={<Cart />} />
+          <Route exact path="*" element={<NotFound />} />
         </Routes>
       </div>
     </div>
