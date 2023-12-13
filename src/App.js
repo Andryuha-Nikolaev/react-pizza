@@ -14,7 +14,7 @@ function App() {
   return (
     <Routes>
       <Route exact path="/" element={<MainLayout />}>
-        <Route exact path="/" element={<Home />} />
+        <Route exact path="" element={<Home />} />
         <Route exact path="/cart" element={<Cart />} />
         <Route exact path="/pizza/:id" element={<FullPizza />} />
         <Route exact path="*" element={<NotFound />} />
