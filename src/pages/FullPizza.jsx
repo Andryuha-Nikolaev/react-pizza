@@ -13,8 +13,8 @@ const FullPizza = () => {
       const { data } = await axios.get(`https://6397233886d04c76338c00d0.mockapi.io/items/${id}`);
       setPizza(data);
     } catch {
-      navigate('/');
       alert('Ошибка при получении пиццы!');
+      navigate('/');
     }
   };
 
