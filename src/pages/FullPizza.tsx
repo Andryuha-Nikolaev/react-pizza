@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const FullPizza = () => {
-  const [pizza, setPizza] = useState();
+  const [pizza, setPizza] = useState<{ imageUrl: string; title: string }>();
   const { id } = useParams();
   const navigate = useNavigate();
 

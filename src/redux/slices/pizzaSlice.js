@@ -47,13 +47,11 @@ const pizzaSlice = createSlice({
     });
 
     builder.addCase(fetchPizzas.fulfilled, (state, action) => {
-      console.log(action);
       state.items = action.payload;
       state.loading = 'succeeded';
     });
 
     builder.addCase(fetchPizzas.rejected, (state, action) => {
-      console.log(action);
       state.items = [];
       state.loading = 'failed';
     });

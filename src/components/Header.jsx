@@ -4,9 +4,11 @@ import Search from './Search';
 
 import { useSelector } from 'react-redux';
 import { selectCart } from '../redux/slices/cartSlice';
+import { useLocation } from 'react-router-dom';
 
 function Header() {
   const { totalPrice, totalItems } = useSelector(selectCart);
+  const pathname = useLocation().pathname;
 
   return (
     <div className="header">
@@ -21,7 +23,7 @@ function Header() {
           </div>
         </Link>
 
-        <Search />
+        {pathname === '/' && <Search />}
 
         <div className="header__cart">
           <Link to="/cart" className="button button--cart">
