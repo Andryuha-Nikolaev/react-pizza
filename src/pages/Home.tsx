@@ -29,13 +29,13 @@ const Home = () => {
 
   const { searchValue } = useSelector(selectFilter);
 
-  const onChangeCategory = (i) => {
-    dispatch(setCategoryId(i));
+  const onChangeCategory = (index: number) => {
+    dispatch(setCategoryId(index));
     dispatch(setCurrentPage(1));
   };
 
-  const onChangePage = (number) => {
-    dispatch(setCurrentPage(number));
+  const onChangePage = (page: number) => {
+    dispatch(setCurrentPage(page));
   };
 
   const getPizzas = async () => {
@@ -45,6 +45,7 @@ const Home = () => {
     const search = searchValue ? `&search=${searchValue}` : '';
 
     dispatch(
+      // @ts-ignore
       pageCount({
         order,
         sortBy,
@@ -54,6 +55,7 @@ const Home = () => {
     );
 
     dispatch(
+      // @ts-ignore
       fetchPizzas({
         order,
         sortBy,
@@ -138,7 +140,7 @@ const Home = () => {
           <div className="content__items">
             {loading === 'pending'
               ? [...new Array(6)].map((_, index) => <Skeleton key={index} />)
-              : items.map((obj) => <PizzaBlock key={obj.id} {...obj} />)}
+              : items.map((obj: any) => <PizzaBlock key={obj.id} {...obj} />)}
           </div>
         </>
       )}{' '}

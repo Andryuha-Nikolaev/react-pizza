@@ -54,6 +54,7 @@
     ]
   },
   "devDependencies": {
+    "@types/lodash.debounce": "^4.0.9",
     "gh-pages": "^4.0.0"
   }
 }
