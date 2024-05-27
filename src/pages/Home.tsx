@@ -18,14 +18,14 @@ const Home = () => {
   const { categoryId, sort, currentPage, searchValue } = useSelector(selectFilter);
   const { items, loading, pageCountNumber } = useSelector(selectPizzasData);
 
-  const onChangeCategory = (index: number) => {
+  const onChangeCategory = React.useCallback((index: number) => {
     dispatch(setCategoryId(index));
     dispatch(setCurrentPage(1));
-  };
+  }, []);
 
-  const onChangePage = (page: number) => {
+  const onChangePage = React.useCallback((page: number) => {
     dispatch(setCurrentPage(page));
-  };
+  }, []);
 
   const getPizzas = async () => {
     const order = sort.sortProperty.includes('-') ? 'asc' : 'desc';

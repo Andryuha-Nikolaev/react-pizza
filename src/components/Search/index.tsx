@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import debounce from 'lodash.debounce';
-import { selectFilter, setSearchValue } from '../../redux/slices/filterSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { selectFilter, setCurrentPage, setSearchValue } from '../../redux/slices/filterSlice';
+import { useSelector } from 'react-redux';
 
 import styles from './Search.module.scss';
-import { useLocation } from 'react-router';
+import { useAppDispatch } from '../../redux/store';
 
 const Search = () => {
   const { searchValue } = useSelector(selectFilter);
@@ -12,10 +12,11 @@ const Search = () => {
   const [value, setValue] = useState(searchValue);
 
   const inputRef = React.useRef<HTMLInputElement>(null);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const updateSearchValue = React.useCallback(
     debounce((str: string) => {
+      dispatch(setCurrentPage(1));
       dispatch(setSearchValue(str));
     }, 150),
     [],

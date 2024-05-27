@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { setSort, selectFilter } from '../redux/slices/filterSlice';
+import { useSelector } from 'react-redux';
+import { setSort, selectFilter, setCurrentPage } from '../redux/slices/filterSlice';
 import { SortProperty } from '../redux/slices/filterSlice';
+import { useAppDispatch } from '../redux/store';
 
 type SortItem = {
   name: string;
@@ -18,7 +19,7 @@ export const sortList: SortItem[] = [
 ];
 
 function Sort() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { sort } = useSelector(selectFilter);
   const [open, setOpen] = useState(false);
 
@@ -39,6 +40,7 @@ function Sort() {
   }, []);
 
   const onClickListItem = (obj: SortItem) => {
+    dispatch(setCurrentPage(1));
     dispatch(setSort(obj));
     setOpen(false);
   };
