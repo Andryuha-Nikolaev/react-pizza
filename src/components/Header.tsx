@@ -1,3 +1,5 @@
+import React, { useEffect } from 'react';
+
 import { Link } from 'react-router-dom';
 import headerLogo from '../assets/img/pizza-logo.svg';
 import Search from './Search';
@@ -5,10 +7,29 @@ import Search from './Search';
 import { useSelector } from 'react-redux';
 import { selectCart } from '../redux/slices/cartSlice';
 import { useLocation } from 'react-router-dom';
+import { useAppDispatch } from '../redux/store';
+import { addItem, CartItemProps } from '../redux/slices/cartSlice';
 
 function Header() {
-  const { totalPrice, totalItems } = useSelector(selectCart);
+  const { totalPrice, totalItems, items } = useSelector(selectCart);
   const pathname = useLocation().pathname;
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const localData = localStorage.getItem('cart');
+    if (localData) {
+      const cartArr = JSON.parse(localData) as CartItemProps[];
+      cartArr.forEach((item) => {
+        [...new Array(item.count)].forEach(() => dispatch(addItem(item)));
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    const json = JSON.stringify(items);
+
+    localStorage.setItem('cart', json);
+  }, [items]);
 
   return (
     <div className="header">
