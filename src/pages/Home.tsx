@@ -1,33 +1,22 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 
-import qs from 'qs';
-import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { useAppDispatch } from '../redux/store';
 
-import {
-  setCategoryId,
-  setCurrentPage,
-  setFilters,
-  selectFilter,
-} from '../redux/slices/filterSlice';
+import { setCategoryId, setCurrentPage, selectFilter } from '../redux/slices/filterSlice';
 
 import Categories from '../components/Categories';
-import Sort, { sortList } from '../components/Sort';
+import Sort from '../components/Sort';
 import PizzaBlock from '../components/PizzaBlock';
 import Skeleton from '../components/PizzaBlock/Skeleton';
 import Pagination from '../components/Pagination';
 import { fetchPizzas, pageCount, selectPizzasData } from '../redux/slices/pizzaSlice';
 
 const Home = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const isSearch = useRef(false);
-  const isMounted = useRef(false);
+  const dispatch = useAppDispatch();
 
-  const { categoryId, sort, currentPage } = useSelector(selectFilter);
+  const { categoryId, sort, currentPage, searchValue } = useSelector(selectFilter);
   const { items, loading, pageCountNumber } = useSelector(selectPizzasData);
-
-  const { searchValue } = useSelector(selectFilter);
 
   const onChangeCategory = (index: number) => {
     dispatch(setCategoryId(index));
@@ -45,7 +34,6 @@ const Home = () => {
     const search = searchValue ? `&search=${searchValue}` : '';
 
     dispatch(
-      // @ts-ignore
       pageCount({
         order,
         sortBy,
@@ -55,61 +43,24 @@ const Home = () => {
     );
 
     dispatch(
-      // @ts-ignore
       fetchPizzas({
         order,
         sortBy,
         category,
         search,
-        currentPage,
+        currentPage: String(currentPage),
       }),
     );
 
     window.scrollTo(0, 0);
   };
 
-  //если изменили параметры и был первый рендер
-  //получаем строку из параметров сортировки, категории, выбранной страницы
-  //для добавления в адресную строку
-  useEffect(() => {
-    if (isMounted.current) {
-      const queryString = qs.stringify({
-        sortProperty: sort.sortProperty,
-        categoryId,
-        currentPage,
-      });
-
-      navigate(`?${queryString}`);
-    }
-    isMounted.current = true;
-  }, [categoryId, sort.sortProperty, currentPage]);
-
-  //если был первый рендер, то запрашиваем пиццы
-  //получение пицц с сервера
-  useEffect(() => {
-    if (!isSearch.current) {
-      getPizzas();
-    }
-    isSearch.current = false;
+  React.useEffect(() => {
+    getPizzas();
   }, [categoryId, sort.sortProperty, searchValue, currentPage]);
 
-  //Если был первый рендер, то проверяем URL-параметры и сохраняем в редаксе
-  //проверка, есть ли параметры поиска в адресной строке при первой загрузке
-  useEffect(() => {
-    if (window.location.search) {
-      const params = qs.parse(window.location.search.substring(1));
-
-      const sort = sortList.find((obj) => obj.sortProperty === params.sortProperty);
-
-      dispatch(
-        setFilters({
-          ...params,
-          sort,
-        }),
-      );
-      isSearch.current = true;
-    }
-  }, []);
+  const pizzas = items.map((obj: any) => <PizzaBlock key={obj.id} {...obj} />);
+  const skeletons = [...new Array(6)].map((_, index) => <Skeleton key={index} />);
 
   return (
     <div className="container">
@@ -137,13 +88,9 @@ const Home = () => {
               <p>Попробуйте изменить поисковой запрос.</p>
             </div>
           )}
-          <div className="content__items">
-            {loading === 'pending'
-              ? [...new Array(6)].map((_, index) => <Skeleton key={index} />)
-              : items.map((obj: any) => <PizzaBlock key={obj.id} {...obj} />)}
-          </div>
+          <div className="content__items">{loading === 'pending' ? skeletons : pizzas}</div>
         </>
-      )}{' '}
+      )}
       <Pagination
         itemsCount={pageCountNumber}
         currentPage={currentPage}

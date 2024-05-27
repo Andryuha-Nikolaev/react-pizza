@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import debounce from 'lodash.debounce';
-import { setSearchValue } from '../../redux/slices/filterSlice';
-import { useDispatch } from 'react-redux';
+import { selectFilter, setSearchValue } from '../../redux/slices/filterSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 import styles from './Search.module.scss';
 import { useLocation } from 'react-router';
 
 const Search = () => {
-  const [value, setValue] = useState('');
+  const { searchValue } = useSelector(selectFilter);
+
+  const [value, setValue] = useState(searchValue);
 
   const inputRef = React.useRef<HTMLInputElement>(null);
   const dispatch = useDispatch();
-  const pathname = useLocation().pathname;
 
   const updateSearchValue = React.useCallback(
     debounce((str: string) => {
@@ -30,11 +31,6 @@ const Search = () => {
     setValue('');
     inputRef.current?.focus();
   }
-
-  useEffect(() => {
-    dispatch(setSearchValue(''));
-    setValue('');
-  }, [pathname]);
 
   return (
     <div className={styles.root}>
