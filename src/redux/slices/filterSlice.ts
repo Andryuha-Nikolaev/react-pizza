@@ -20,7 +20,7 @@ const initialState: FilterSliceState = {
   categoryId: 0,
   currentPage: 1,
   sort: {
-    name: 'популярности',
+    name: 'популярности (по убыв)',
     sortProperty: 'rating',
   },
 };
