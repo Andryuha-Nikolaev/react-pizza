@@ -12,6 +12,7 @@
 
   &__image {
     width: 260px;
+    border-radius: 50%;
   }
 
   &__title {
@@ -23,7 +24,7 @@
 
   &__selector {
     display: flex;
-    background-color: #f3f3f3;
+    background-color: antiquewhite;
     border-radius: 10px;
     flex-direction: column;
     padding: 6px;

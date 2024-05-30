@@ -1,3 +1,6 @@
+.wrap {
+}
+
 .root {
   li {
     display: inline-block;
@@ -7,15 +10,15 @@
       width: 45px;
       line-height: 42px;
       height: 45px;
-      border: 1px solid #fe5f1e;
+      border: 1px solid #000;
       border-radius: 30px;
       margin-right: 10px;
       cursor: pointer;
       display: inline-block;
-      color: #fe5f1e;
+      color: #000;
 
       &:hover {
-        background-color: #fe5f1e;
+        background-color: #000;
         color: #fff;
       }
     }
@@ -24,9 +27,14 @@
   :global {
     .selected {
       a {
-        background-color: #fe5f1e;
+        background-color: #000;
         color: #fff;
       }
     }
   }
+}
+
+.btn_disabled {
+  pointer-events: none;
+  opacity: 0.4;
 }

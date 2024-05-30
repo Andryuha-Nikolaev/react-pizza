@@ -6,15 +6,25 @@
 
   .container {
     display: flex;
-    align-items: center;
+    position: relative;
     justify-content: space-between;
+    gap: 15px;
 
-    @media (max-width: 645px) {
+    @media (max-width: 1023px) {
       flex-direction: column;
+    }
+  }
 
-      .header__cart {
-        margin-top: 20px;
-      }
+  &__cart {
+    width: fit-content;
+    flex-shrink: 0;
+
+    @media (max-width: 1279px) {
+      order: 3;
+    }
+
+    @media (max-width: 1023px) {
+      order: 0;
     }
   }
 

@@ -1,8 +1,36 @@
+import React, { useEffect } from 'react';
+
 import { Link } from 'react-router-dom';
 import headerLogo from '../assets/img/pizza-logo.svg';
 import Search from './Search';
 
+import { useSelector } from 'react-redux';
+import { selectCart } from '../redux/slices/cartSlice';
+import { useLocation } from 'react-router-dom';
+import { useAppDispatch } from '../redux/store';
+import { addItem, CartItemProps } from '../redux/slices/cartSlice';
+
 function Header() {
+  const { totalPrice, totalItems, items } = useSelector(selectCart);
+  const pathname = useLocation().pathname;
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const localData = localStorage.getItem('cart');
+    if (localData) {
+      const cartArr = JSON.parse(localData) as CartItemProps[];
+      cartArr.forEach((item) => {
+        [...new Array(item.count)].forEach(() => dispatch(addItem(item)));
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    const json = JSON.stringify(items);
+
+    localStorage.setItem('cart', json);
+  }, [items]);
+
   return (
     <div className="header">
       <div className="container">
@@ -10,17 +38,20 @@ function Header() {
           <div className="header__logo">
             <img width="38" src={headerLogo} alt="Pizza logo" />
             <div>
+<<<<<<< HEAD:src/components/Header.jsx
               <h1>React Pizza ахаха</h1>
               <p>самая вкусная пицца во вселенной</p>
+=======
+              <h1>React Pizza</h1>
+              <p>самая вкусная пицца во&nbsp;вселенной</p>
+>>>>>>> release/Release-3:src/components/Header.tsx
             </div>
           </div>
         </Link>
 
-        <Search />
-
         <div className="header__cart">
           <Link to="/cart" className="button button--cart">
-            <span>520 ₽</span>
+            <span>{totalPrice} ₽</span>
             <div className="button__delimiter"></div>
             <svg
               width="18"
@@ -50,9 +81,10 @@ function Header() {
                 strokeLinejoin="round"
               />
             </svg>
-            <span>3</span>
+            <span>{totalItems}</span>
           </Link>
         </div>
+        {pathname === '/' && <Search />}
       </div>
     </div>
   );
