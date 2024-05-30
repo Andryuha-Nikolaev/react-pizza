@@ -38,8 +38,13 @@ function Header() {
           <div className="header__logo">
             <img width="38" src={headerLogo} alt="Pizza logo" />
             <div>
+<<<<<<< HEAD:src/components/Header.jsx
+              <h1>React Pizza ахаха</h1>
+              <p>самая вкусная пицца во вселенной</p>
+=======
               <h1>React Pizza</h1>
               <p>самая вкусная пицца во&nbsp;вселенной</p>
+>>>>>>> release/Release-3:src/components/Header.tsx
             </div>
           </div>
         </Link>
