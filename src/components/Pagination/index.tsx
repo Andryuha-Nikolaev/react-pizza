@@ -20,6 +20,7 @@ const Pagination: React.FC<PaginationProps> = ({ itemsCount, currentPage, onChan
       pageRangeDisplayed={4}
       pageCount={itemsCount}
       forcePage={currentPage - 1}
+      disabledClassName={styles.btn_disabled}
     />
   );
 };

@@ -39,12 +39,10 @@ function Header() {
             <img width="38" src={headerLogo} alt="Pizza logo" />
             <div>
               <h1>React Pizza</h1>
-              <p>самая вкусная пицца во вселенной</p>
+              <p>самая вкусная пицца во&nbsp;вселенной</p>
             </div>
           </div>
         </Link>
-
-        {pathname === '/' && <Search />}
 
         <div className="header__cart">
           <Link to="/cart" className="button button--cart">
@@ -81,6 +79,7 @@ function Header() {
             <span>{totalItems}</span>
           </Link>
         </div>
+        {pathname === '/' && <Search />}
       </div>
     </div>
   );

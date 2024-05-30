@@ -73,7 +73,7 @@ const Search = () => {
         value={value}
         onChange={(event) => onChangeInput(event)}
         className={styles.input}
-        placeholder="Поиск пиццы ..."
+        placeholder="Поиск пиццы..."
       />
       {value && (
         <svg

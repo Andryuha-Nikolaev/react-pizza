@@ -1,20 +1,27 @@
 .root {
-  position: relative;
-  left: -120px;
+  position: absolute;
+  width: 100%;
+  max-width: 400px;
+  left: 50%;
+  transform: translateX(-50%);
 
+  @media (max-width: 1279px) {
+    position: static;
+    transform: none;
+  }
 }
 
 .input {
   border: 1px solid rgba(0, 0, 0, 0.1);
   padding: 12px 20px;
   padding-left: 42px;
-  width: 400px;
+  width: 100%;
+
   border-radius: 10px;
   font-size: 16px;
 
   &:focus {
     border: 1px solid rgba(0, 0, 0, 0.2);
-   
   }
 }
 
