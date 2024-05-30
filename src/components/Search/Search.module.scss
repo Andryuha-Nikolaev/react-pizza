@@ -6,8 +6,9 @@
   transform: translateX(-50%);
 
   @media (max-width: 1279px) {
-    position: static;
+    position: relative;
     transform: none;
+    left: 0;
   }
 }
 
