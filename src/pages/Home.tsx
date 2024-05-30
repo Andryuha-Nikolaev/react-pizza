@@ -69,33 +69,23 @@ const Home = () => {
         <Sort />
       </div>
       <h2 className="content__title">Все пиццы</h2>
-      {loading === 'failed' ? (
+
+      {!items.length && (
         <div className="content__error-info">
           <h2>
-            Произошла ошибка <span>😕</span>
+            Ничего не найдено <span>😕</span>
           </h2>
-          <p>Не удалось получить пиццы.</p>
-
-          <p>Попробуйте повторить попытку позже.</p>
+          <p>Попробуйте изменить поисковой запрос.</p>
         </div>
-      ) : (
-        <>
-          {loading === 'succeeded' && !items.length && (
-            <div className="content__error-info">
-              <h2>
-                Ничего не найдено <span>😕</span>
-              </h2>
-              <p>Попробуйте изменить поисковой запрос.</p>
-            </div>
-          )}
-          <div className="content__items">{loading === 'pending' ? skeletons : pizzas}</div>
-        </>
       )}
-      <Pagination
-        itemsCount={pageCountNumber}
-        currentPage={currentPage}
-        onChangePage={onChangePage}
-      />
+      <div className="content__items">{loading === 'pending' ? skeletons : pizzas}</div>
+      {!!items.length && (
+        <Pagination
+          itemsCount={pageCountNumber}
+          currentPage={currentPage}
+          onChangePage={onChangePage}
+        />
+      )}
     </div>
   );
 };
