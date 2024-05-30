@@ -2,6 +2,9 @@
 
 .sort {
   position: relative;
+  margin-left: auto;
+  flex-shrink: 0;
+  min-width: 240px;
   &__label {
     display: flex;
     align-items: center;
@@ -25,7 +28,7 @@
     position: absolute;
     right: 0;
     margin-top: 15px;
-    background: #ffffff;
+    background: $gray-line;
     box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.09);
     border-radius: 10px;
     overflow: hidden;
